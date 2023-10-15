@@ -60,7 +60,10 @@ def featureplot():
 
 def heatmap():
     corr_matrix=df2.iloc[:,1:].corr()
-    fig = px.imshow(corr_matrix,text_auto=True)
+
+    custom_colormap = list((px.colors.sequential.Blues))
+
+    fig = px.imshow(corr_matrix,text_auto=True,color_continuous_scale=custom_colormap)
     fig.update_layout(width=1400, height=1200)
     return fig
 
