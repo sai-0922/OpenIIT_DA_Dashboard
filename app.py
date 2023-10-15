@@ -29,6 +29,13 @@ def main():
     st.markdown("---")
     st.markdown("<p style='margin: 30px;'></p>", unsafe_allow_html=True)
 
+    st.header('Seasonal Decomposition Plot')
+    st.write(seasonality())
+
+    st.markdown("<p style='margin: 30px;'></p>", unsafe_allow_html=True)
+    st.markdown("---")
+    st.markdown("<p style='margin: 30px;'></p>", unsafe_allow_html=True)
+
     st.header("AutoCorrelation function (ACF) demonstrating seasonality")
     ACFPlot()
 
@@ -36,7 +43,7 @@ def main():
     st.markdown("---")
     st.markdown("<p style='margin: 30px;'></p>", unsafe_allow_html=True)
 
-    st.header("")
+    st.header("Original Data v/s Predicted Values")
     st.write(plot_original_vs_predicted())
 
     st.markdown("<p style='margin: 30px;'></p>", unsafe_allow_html=True)
@@ -53,6 +60,12 @@ def main():
     st.header("xgboost model Deviance")
     st.write(xgboost())
 
+    st.markdown("<p style='margin: 30px;'></p>", unsafe_allow_html=True)
+    st.markdown("---")
+    st.markdown("<p style='margin: 30px;'></p>", unsafe_allow_html=True)
+
+    st.header("Final Results")
+    st.dataframe(accuracy(), height=210, width=1400, use_container_width=True)
 
 if __name__==main():
     main()    

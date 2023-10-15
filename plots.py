@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 from plotly.subplots import make_subplots
 from statsmodels.graphics.tsaplots import plot_acf
+from statsmodels.tsa.seasonal import seasonal_decompose
 from statsmodels.tsa.stattools import acf
 import streamlit as st
 df1=pd.read_csv('interpolated.csv',header=None)
@@ -64,6 +65,28 @@ def heatmap():
     return fig
 
 
+def seasonality():
+    result = seasonal_decompose(df2['Pilgrims'],model='additive',period=52)
+    fig = make_subplots(rows=4, cols=1, shared_xaxes=True, 
+                      subplot_titles=['Observed', 'Trend','Seasonal', 'Residual'])
+
+    # Add the observed component to the first subplot
+    fig.add_trace(go.Scatter(x=df2.index, y=result.observed, mode='lines', name='Observed'), row=1, col=1)
+    # Add the seasonal component to the second subplot
+    fig.add_trace(go.Scatter(x=df2.index, y=result.seasonal, mode='lines', name='Seasonal'), row=3, col=1)
+    # Add the trend component to the third subplot
+    fig.add_trace(go.Scatter(x=df2.index, y=result.trend, mode='lines', name='Trend'), row=2, col=1)
+    # Add the residual component to the fourth subplot
+    fig.add_trace(go.Scatter(x=df2.index, y=result.resid, mode='lines', name='Residual'), row=4, col=1)
+
+
+    # Set the layout
+    fig.update_layout(yaxis_title='Value',
+                    width=1400, height=1200)
+
+    return fig
+
+
 def ACFPlot():
     # Create an ACF plot
     acf_values, acf_confint = acf(df1[1], nlags=100, alpha=0.05)
@@ -91,11 +114,10 @@ def plot_original_vs_predicted():
 
     # Add traces for original values and predicted values
     fig.add_trace(go.Scatter(x=df3['date'], y=df3['1'], mode='lines', name='Original Values'))
-    fig.add_trace(go.Scatter(x=df3['date'], y=df3['0'], mode='lines', name='Final Predicted Values Ensemble'))
+    fig.add_trace(go.Scatter(x=df3['date'], y=df3['0'], mode='lines', name='Final Predicted Values Ensemble',line=dict(color='red')))
 
     # Customize the layout
     fig.update_layout(
-        title="Original vs. Predicted Values",
         xaxis_title="Date",
         yaxis_title="Values",
         width=1400,
@@ -148,3 +170,10 @@ def xgboost():
     )
 
     return fig
+
+def accuracy():
+    data = {'Model': ['Gradient Boosting Regressor', 'LSTM', 'Ensemble Model', 'Sarima', 'n-Hits'],
+            'MAPE': [12.06, 4.9, 8.43, 5.3, 4.6]}
+    df = pd.DataFrame(data)
+
+    return df
